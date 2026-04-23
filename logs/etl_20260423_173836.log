@@ -1,0 +1,71 @@
+2026-04-23 17:38:36  INFO      
+2026-04-23 17:38:36  INFO      ************************************************************
+2026-04-23 17:38:36  INFO        PATIENT READMISSION RISK ANALYZER — ETL PIPELINE
+2026-04-23 17:38:36  INFO        Run started: 2026-04-23 17:38:36
+2026-04-23 17:38:36  INFO      ************************************************************
+2026-04-23 17:38:36  INFO      ============================================================
+2026-04-23 17:38:36  INFO      STAGE 1 — EXTRACT
+2026-04-23 17:38:36  INFO      ============================================================
+2026-04-23 17:38:36  INFO        Extracted   5,148 rows  <-  data/raw/patients_raw.csv
+2026-04-23 17:38:39  INFO        Loaded into staging.stg_patients
+2026-04-23 17:38:39  INFO        Extracted  10,199 rows  <-  data/raw/admissions_raw.csv
+2026-04-23 17:38:40  INFO        Loaded into staging.stg_admissions
+2026-04-23 17:38:40  INFO        Extracted  25,000 rows  <-  data/raw/lab_results_raw.json
+2026-04-23 17:38:43  INFO        Loaded into staging.stg_lab_results
+2026-04-23 17:38:43  INFO        Extract complete in 6.60s
+2026-04-23 17:38:43  INFO      ============================================================
+2026-04-23 17:38:43  INFO      STAGE 2 — TRANSFORM
+2026-04-23 17:38:43  INFO      ============================================================
+2026-04-23 17:38:43  INFO        Transforming patients ...
+2026-04-23 17:38:44  INFO          Accepted: 3,749  |  Rejected: 1,399
+2026-04-23 17:38:44  INFO        Transforming admissions ...
+2026-04-23 17:38:45  INFO          Accepted: 8,546  |  Rejected: 1,454
+2026-04-23 17:38:45  INFO          Invalid ICD-10: 846 rows rejected
+2026-04-23 17:38:45  INFO        Transforming lab_results ...
+2026-04-23 17:38:46  INFO          Accepted: 23,396  |  Rejected: 1,604
+2026-04-23 17:38:46  INFO          Abnormal results flagged: 16,950
+2026-04-23 17:38:46  INFO        Transform complete in 3.70s
+2026-04-23 17:38:46  INFO      ============================================================
+2026-04-23 17:38:46  INFO      STAGE 3 — LOAD
+2026-04-23 17:38:46  INFO      ============================================================
+2026-04-23 17:38:47  INFO        Seeded departments table
+2026-04-23 17:38:50  INFO        Seeded doctors table (80 doctors)
+2026-04-23 17:38:50  INFO        Loading patients ...
+2026-04-23 17:38:50  ERROR       LOAD failed — transaction rolled back: (psycopg2.errors.StringDataRightTruncation) value too long for type character varying(20)
+
+[SQL: 
+                    INSERT INTO production.patients
+                        (first_name, last_name, date_of_birth, gender,
+                         blood_type, phone, email, address, city,
+                         state, zip_code, insurance_provider, insurance_id)
+                    VALUES
+                        (%(first_name)s, %(last_name)s, %(date_of_birth)s, %(gender)s,
+                         %(blood_type)s, %(phone)s, %(email)s, %(address)s, %(city)s,
+                         %(state)s, %(zip_code)s, %(insurance_provider)s, %(insurance_id)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'first_name': 'James', 'last_name': 'King', 'date_of_birth': '1936-01-18', 'gender': 'M', 'blood_type': 'A-', 'phone': '001-270-555-5537x33462', 'email': 'graveskayla@example.org', 'address': '5243 Clark Stravenue', 'city': 'North Toddmouth', 'state': 'ID', 'zip_code': '27888', 'insurance_provider': 'Self-Pay', 'insurance_id': 'INS238739'}]
+(Background on this error at: https://sqlalche.me/e/20/9h9h)
+2026-04-23 17:38:50  ERROR     Pipeline failed: (psycopg2.errors.StringDataRightTruncation) value too long for type character varying(20)
+
+[SQL: 
+                    INSERT INTO production.patients
+                        (first_name, last_name, date_of_birth, gender,
+                         blood_type, phone, email, address, city,
+                         state, zip_code, insurance_provider, insurance_id)
+                    VALUES
+                        (%(first_name)s, %(last_name)s, %(date_of_birth)s, %(gender)s,
+                         %(blood_type)s, %(phone)s, %(email)s, %(address)s, %(city)s,
+                         %(state)s, %(zip_code)s, %(insurance_provider)s, %(insurance_id)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'first_name': 'James', 'last_name': 'King', 'date_of_birth': '1936-01-18', 'gender': 'M', 'blood_type': 'A-', 'phone': '001-270-555-5537x33462', 'email': 'graveskayla@example.org', 'address': '5243 Clark Stravenue', 'city': 'North Toddmouth', 'state': 'ID', 'zip_code': '27888', 'insurance_provider': 'Self-Pay', 'insurance_id': 'INS238739'}]
+(Background on this error at: https://sqlalche.me/e/20/9h9h)
+2026-04-23 17:38:50  INFO      
+2026-04-23 17:38:50  INFO      ************************************************************
+2026-04-23 17:38:50  INFO        PIPELINE SUMMARY
+2026-04-23 17:38:50  INFO      ************************************************************
+2026-04-23 17:38:50  INFO        Duration        :   14.58s
+2026-04-23 17:38:50  INFO        Status          : FAILED
+2026-04-23 17:38:50  INFO        Log file        : logs/etl_20260423_173836.log
+2026-04-23 17:38:50  INFO      ************************************************************

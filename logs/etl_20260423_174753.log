@@ -1,0 +1,79 @@
+2026-04-23 17:47:53  INFO      
+2026-04-23 17:47:53  INFO      ************************************************************
+2026-04-23 17:47:53  INFO        PATIENT READMISSION RISK ANALYZER — ETL PIPELINE
+2026-04-23 17:47:53  INFO        Run started: 2026-04-23 17:47:53
+2026-04-23 17:47:53  INFO      ************************************************************
+2026-04-23 17:47:53  INFO      ============================================================
+2026-04-23 17:47:53  INFO      STAGE 1 — EXTRACT
+2026-04-23 17:47:53  INFO      ============================================================
+2026-04-23 17:47:53  INFO        Extracted   5,148 rows  <-  data/raw/patients_raw.csv
+2026-04-23 17:47:54  INFO        Loaded into staging.stg_patients
+2026-04-23 17:47:54  INFO        Extracted  10,199 rows  <-  data/raw/admissions_raw.csv
+2026-04-23 17:47:54  INFO        Loaded into staging.stg_admissions
+2026-04-23 17:47:54  INFO        Extracted  25,000 rows  <-  data/raw/lab_results_raw.json
+2026-04-23 17:47:55  INFO        Loaded into staging.stg_lab_results
+2026-04-23 17:47:55  INFO        Extract complete in 2.03s
+2026-04-23 17:47:55  INFO      ============================================================
+2026-04-23 17:47:55  INFO      STAGE 2 — TRANSFORM
+2026-04-23 17:47:55  INFO      ============================================================
+2026-04-23 17:47:55  INFO        Transforming patients ...
+2026-04-23 17:47:57  INFO          Accepted: 3,749  |  Rejected: 1,399
+2026-04-23 17:47:57  INFO        Transforming admissions ...
+2026-04-23 17:47:58  INFO          Accepted: 8,546  |  Rejected: 1,454
+2026-04-23 17:47:58  INFO          Invalid ICD-10: 846 rows rejected
+2026-04-23 17:47:58  INFO        Transforming lab_results ...
+2026-04-23 17:47:59  INFO          Accepted: 23,396  |  Rejected: 1,604
+2026-04-23 17:47:59  INFO          Abnormal results flagged: 16,950
+2026-04-23 17:47:59  INFO        Transform complete in 4.13s
+2026-04-23 17:47:59  INFO      ============================================================
+2026-04-23 17:47:59  INFO      STAGE 3 — LOAD
+2026-04-23 17:47:59  INFO      ============================================================
+2026-04-23 17:47:59  INFO        Loading patients ...
+2026-04-23 17:48:01  INFO          Loaded 3,749 patients
+2026-04-23 17:48:01  INFO        Loading admissions ...
+2026-04-23 17:48:01  ERROR       LOAD failed — transaction rolled back: (psycopg2.errors.NumericValueOutOfRange) smallint out of range
+
+[SQL: 
+                    INSERT INTO production.admissions
+                        (patient_id, doctor_id, department_id,
+                         admission_date, discharge_date,
+                         admission_type, discharge_disposition,
+                         primary_diagnosis_code,
+                         readmission_flag, days_to_readmission)
+                    VALUES
+                        (%(patient_id)s, %(doctor_id)s, %(department_id)s,
+                         %(admission_date)s, %(discharge_date)s,
+                         %(admission_type)s, %(discharge_disposition)s,
+                         %(primary_diagnosis_code)s,
+                         %(readmission_flag)s, %(days_to_readmission)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'patient_id': 125, 'doctor_id': 36, 'department_id': 4, 'admission_date': '2021-07-12', 'discharge_date': '2021-07-14', 'admission_type': 'Elective', 'discharge_disposition': 'AMA', 'primary_diagnosis_code': 'K35.80', 'readmission_flag': True, 'days_to_readmission': nan}]
+(Background on this error at: https://sqlalche.me/e/20/9h9h)
+2026-04-23 17:48:01  ERROR     Pipeline failed: (psycopg2.errors.NumericValueOutOfRange) smallint out of range
+
+[SQL: 
+                    INSERT INTO production.admissions
+                        (patient_id, doctor_id, department_id,
+                         admission_date, discharge_date,
+                         admission_type, discharge_disposition,
+                         primary_diagnosis_code,
+                         readmission_flag, days_to_readmission)
+                    VALUES
+                        (%(patient_id)s, %(doctor_id)s, %(department_id)s,
+                         %(admission_date)s, %(discharge_date)s,
+                         %(admission_type)s, %(discharge_disposition)s,
+                         %(primary_diagnosis_code)s,
+                         %(readmission_flag)s, %(days_to_readmission)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'patient_id': 125, 'doctor_id': 36, 'department_id': 4, 'admission_date': '2021-07-12', 'discharge_date': '2021-07-14', 'admission_type': 'Elective', 'discharge_disposition': 'AMA', 'primary_diagnosis_code': 'K35.80', 'readmission_flag': True, 'days_to_readmission': nan}]
+(Background on this error at: https://sqlalche.me/e/20/9h9h)
+2026-04-23 17:48:01  INFO      
+2026-04-23 17:48:01  INFO      ************************************************************
+2026-04-23 17:48:01  INFO        PIPELINE SUMMARY
+2026-04-23 17:48:01  INFO      ************************************************************
+2026-04-23 17:48:01  INFO        Duration        :    8.35s
+2026-04-23 17:48:01  INFO        Status          : FAILED
+2026-04-23 17:48:01  INFO        Log file        : logs/etl_20260423_174753.log
+2026-04-23 17:48:01  INFO      ************************************************************

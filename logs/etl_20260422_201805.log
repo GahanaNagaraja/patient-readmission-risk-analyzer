@@ -1,0 +1,40 @@
+2026-04-22 20:18:05  INFO      
+2026-04-22 20:18:05  INFO      ************************************************************
+2026-04-22 20:18:05  INFO        PATIENT READMISSION RISK ANALYZER — ETL PIPELINE
+2026-04-22 20:18:05  INFO        Run started: 2026-04-22 20:18:05
+2026-04-22 20:18:05  INFO      ************************************************************
+2026-04-22 20:18:06  INFO      ============================================================
+2026-04-22 20:18:06  INFO      STAGE 1 — EXTRACT
+2026-04-22 20:18:06  INFO      ============================================================
+2026-04-22 20:18:07  INFO        Extracted   5,148 rows  <-  data/raw/patients_raw.csv
+2026-04-22 20:18:11  ERROR       EXTRACT failed for patients: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-22 20:18:11  INFO        Extracted  10,199 rows  <-  data/raw/admissions_raw.csv
+2026-04-22 20:18:15  ERROR       EXTRACT failed for admissions: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-22 20:18:15  INFO        Extracted  25,000 rows  <-  data/raw/lab_results_raw.json
+2026-04-22 20:18:19  ERROR       EXTRACT failed for lab_results: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-22 20:18:19  INFO        Extract complete in 12.77s
+2026-04-22 20:18:19  INFO      ============================================================
+2026-04-22 20:18:19  INFO      STAGE 2 — TRANSFORM
+2026-04-22 20:18:19  INFO      ============================================================
+2026-04-22 20:18:19  INFO        Transforming patients ...
+2026-04-22 20:18:19  INFO          Accepted: 0  |  Rejected: 0
+2026-04-22 20:18:19  INFO        Transforming admissions ...
+2026-04-22 20:18:19  INFO          Accepted: 0  |  Rejected: 0
+2026-04-22 20:18:19  INFO          Invalid ICD-10: 0 rows rejected
+2026-04-22 20:18:19  INFO        Transforming lab_results ...
+2026-04-22 20:18:19  ERROR     Pipeline failed: "['reference_range'] not found in axis"

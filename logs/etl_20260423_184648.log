@@ -1,0 +1,50 @@
+2026-04-23 18:46:48  INFO      
+2026-04-23 18:46:48  INFO      ************************************************************
+2026-04-23 18:46:48  INFO        PATIENT READMISSION RISK ANALYZER — ETL PIPELINE
+2026-04-23 18:46:48  INFO        Run started: 2026-04-23 18:46:48
+2026-04-23 18:46:48  INFO      ************************************************************
+2026-04-23 18:46:48  INFO      ============================================================
+2026-04-23 18:46:48  INFO      STAGE 1 — EXTRACT
+2026-04-23 18:46:48  INFO      ============================================================
+2026-04-23 18:46:48  INFO        Extracted   5,148 rows  <-  data/raw/patients_raw.csv
+2026-04-23 18:46:49  INFO        Loaded into staging.stg_patients
+2026-04-23 18:46:49  INFO        Extracted  10,199 rows  <-  data/raw/admissions_raw.csv
+2026-04-23 18:46:50  INFO        Loaded into staging.stg_admissions
+2026-04-23 18:46:50  INFO        Extracted  25,000 rows  <-  data/raw/lab_results_raw.json
+2026-04-23 18:46:52  INFO        Loaded into staging.stg_lab_results
+2026-04-23 18:46:52  INFO        Extract complete in 3.66s
+2026-04-23 18:46:52  INFO      ============================================================
+2026-04-23 18:46:52  INFO      STAGE 2 — TRANSFORM
+2026-04-23 18:46:52  INFO      ============================================================
+2026-04-23 18:46:52  INFO        Transforming patients ...
+2026-04-23 18:46:53  INFO          Accepted: 3,749  |  Rejected: 1,399
+2026-04-23 18:46:53  INFO        Transforming admissions ...
+2026-04-23 18:46:58  INFO          Accepted: 8,546  |  Rejected: 1,454
+2026-04-23 18:46:58  INFO          Invalid ICD-10: 846 rows rejected
+2026-04-23 18:46:58  INFO        Transforming lab_results ...
+2026-04-23 18:47:00  INFO          Accepted: 23,396  |  Rejected: 1,604
+2026-04-23 18:47:00  INFO          Abnormal results flagged: 16,950
+2026-04-23 18:47:00  INFO        Transform complete in 7.91s
+2026-04-23 18:47:00  INFO      ============================================================
+2026-04-23 18:47:00  INFO      STAGE 3 — LOAD
+2026-04-23 18:47:00  INFO      ============================================================
+2026-04-23 18:47:00  INFO        Loading patients ...
+2026-04-23 18:47:04  INFO          Loaded 3,749 patients
+2026-04-23 18:47:04  INFO        Loading admissions ...
+2026-04-23 18:47:15  INFO          Loaded 8,546 admissions
+2026-04-23 18:47:15  INFO        Loading lab results ...
+2026-04-23 18:47:29  INFO          Loaded 23,396 lab results
+2026-04-23 18:47:29  INFO        Load complete in 28.82s  |  Total rows loaded: 35,691
+2026-04-23 18:47:29  INFO      
+2026-04-23 18:47:29  INFO      ************************************************************
+2026-04-23 18:47:29  INFO        PIPELINE SUMMARY
+2026-04-23 18:47:29  INFO      ************************************************************
+2026-04-23 18:47:29  INFO        Rows extracted  :   40,347
+2026-04-23 18:47:29  INFO        Rows transformed:   35,691
+2026-04-23 18:47:29  INFO        Rows loaded     :   35,691
+2026-04-23 18:47:29  INFO        Rows rejected   :    4,457
+2026-04-23 18:47:29  INFO        Rejection rate  :   11.05%
+2026-04-23 18:47:29  INFO        Duration        :   40.59s
+2026-04-23 18:47:29  INFO        Status          : SUCCESS
+2026-04-23 18:47:29  INFO        Log file        : logs/etl_20260423_184648.log
+2026-04-23 18:47:29  INFO      ************************************************************

@@ -1,0 +1,81 @@
+2026-04-23 18:03:02  INFO      
+2026-04-23 18:03:02  INFO      ************************************************************
+2026-04-23 18:03:02  INFO        PATIENT READMISSION RISK ANALYZER — ETL PIPELINE
+2026-04-23 18:03:02  INFO        Run started: 2026-04-23 18:03:02
+2026-04-23 18:03:02  INFO      ************************************************************
+2026-04-23 18:03:02  INFO      ============================================================
+2026-04-23 18:03:02  INFO      STAGE 1 — EXTRACT
+2026-04-23 18:03:02  INFO      ============================================================
+2026-04-23 18:03:02  INFO        Extracted   5,148 rows  <-  data/raw/patients_raw.csv
+2026-04-23 18:03:03  INFO        Loaded into staging.stg_patients
+2026-04-23 18:03:03  INFO        Extracted  10,199 rows  <-  data/raw/admissions_raw.csv
+2026-04-23 18:03:03  INFO        Loaded into staging.stg_admissions
+2026-04-23 18:03:03  INFO        Extracted  25,000 rows  <-  data/raw/lab_results_raw.json
+2026-04-23 18:03:04  INFO        Loaded into staging.stg_lab_results
+2026-04-23 18:03:04  INFO        Extract complete in 1.87s
+2026-04-23 18:03:04  INFO      ============================================================
+2026-04-23 18:03:04  INFO      STAGE 2 — TRANSFORM
+2026-04-23 18:03:04  INFO      ============================================================
+2026-04-23 18:03:04  INFO        Transforming patients ...
+2026-04-23 18:03:04  INFO          Accepted: 3,749  |  Rejected: 1,399
+2026-04-23 18:03:04  INFO        Transforming admissions ...
+2026-04-23 18:03:05  INFO          Accepted: 8,546  |  Rejected: 1,454
+2026-04-23 18:03:05  INFO          Invalid ICD-10: 846 rows rejected
+2026-04-23 18:03:05  INFO        Transforming lab_results ...
+2026-04-23 18:03:06  INFO          Accepted: 23,396  |  Rejected: 1,604
+2026-04-23 18:03:06  INFO          Abnormal results flagged: 16,950
+2026-04-23 18:03:06  INFO        Transform complete in 1.93s
+2026-04-23 18:03:06  INFO      ============================================================
+2026-04-23 18:03:06  INFO      STAGE 3 — LOAD
+2026-04-23 18:03:06  INFO      ============================================================
+2026-04-23 18:03:06  INFO        Loading patients ...
+2026-04-23 18:03:08  INFO          Loaded 3,749 patients
+2026-04-23 18:03:08  INFO        Loading admissions ...
+2026-04-23 18:03:08  ERROR       LOAD failed — transaction rolled back: (psycopg2.errors.CheckViolation) new row for relation "admissions" violates check constraint "chk_readmission_days"
+DETAIL:  Failing row contains (1, 102, 36, 4, 2021-07-12, 2021-07-14, Elective, AMA, K35.80, t, null, 2, 2026-04-23 18:03:08.596001).
+
+[SQL: 
+                    INSERT INTO production.admissions
+                        (patient_id, doctor_id, department_id,
+                         admission_date, discharge_date,
+                         admission_type, discharge_disposition,
+                         primary_diagnosis_code,
+                         readmission_flag, days_to_readmission)
+                    VALUES
+                        (%(patient_id)s, %(doctor_id)s, %(department_id)s,
+                         %(admission_date)s, %(discharge_date)s,
+                         %(admission_type)s, %(discharge_disposition)s,
+                         %(primary_diagnosis_code)s,
+                         %(readmission_flag)s, %(days_to_readmission)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'patient_id': 102, 'doctor_id': 36, 'department_id': 4, 'admission_date': '2021-07-12', 'discharge_date': '2021-07-14', 'admission_type': 'Elective', 'discharge_disposition': 'AMA', 'primary_diagnosis_code': 'K35.80', 'readmission_flag': True, 'days_to_readmission': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-23 18:03:08  ERROR     Pipeline failed: (psycopg2.errors.CheckViolation) new row for relation "admissions" violates check constraint "chk_readmission_days"
+DETAIL:  Failing row contains (1, 102, 36, 4, 2021-07-12, 2021-07-14, Elective, AMA, K35.80, t, null, 2, 2026-04-23 18:03:08.596001).
+
+[SQL: 
+                    INSERT INTO production.admissions
+                        (patient_id, doctor_id, department_id,
+                         admission_date, discharge_date,
+                         admission_type, discharge_disposition,
+                         primary_diagnosis_code,
+                         readmission_flag, days_to_readmission)
+                    VALUES
+                        (%(patient_id)s, %(doctor_id)s, %(department_id)s,
+                         %(admission_date)s, %(discharge_date)s,
+                         %(admission_type)s, %(discharge_disposition)s,
+                         %(primary_diagnosis_code)s,
+                         %(readmission_flag)s, %(days_to_readmission)s)
+                    ON CONFLICT DO NOTHING
+                ]
+[parameters: {'patient_id': 102, 'doctor_id': 36, 'department_id': 4, 'admission_date': '2021-07-12', 'discharge_date': '2021-07-14', 'admission_type': 'Elective', 'discharge_disposition': 'AMA', 'primary_diagnosis_code': 'K35.80', 'readmission_flag': True, 'days_to_readmission': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-04-23 18:03:08  INFO      
+2026-04-23 18:03:08  INFO      ************************************************************
+2026-04-23 18:03:08  INFO        PIPELINE SUMMARY
+2026-04-23 18:03:08  INFO      ************************************************************
+2026-04-23 18:03:08  INFO        Duration        :    6.06s
+2026-04-23 18:03:08  INFO        Status          : FAILED
+2026-04-23 18:03:08  INFO        Log file        : logs/etl_20260423_180302.log
+2026-04-23 18:03:08  INFO      ************************************************************
